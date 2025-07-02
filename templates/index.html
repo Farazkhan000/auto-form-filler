@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head><title>Auto Form Filler</title></head>
+<head>
+    <title>Upload PDF</title>
+</head>
 <body>
-    <h2>Upload Your CV</h2>
-    <form action="/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <button type="submit">Upload</button>
+    <h1>Upload Your PDF</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
     </form>
 </body>
 </html>
