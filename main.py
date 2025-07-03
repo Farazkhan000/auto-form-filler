@@ -1,10 +1,8 @@
 from flask import Flask, render_template, request
+import PyPDF2
 import os
-from cv_parser import parse_pdf
 
 app = Flask(__name__)
-UPLOAD_FOLDER = 'uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def index():
@@ -13,19 +11,21 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
-        return "No file uploaded"
-    
+        return 'No file part'
+
     file = request.files['file']
+
     if file.filename == '':
-        return "No file selected"
-    
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(file_path)
+        return 'No selected file'
 
-    # Parse PDF
-    name, email, phone = parse_pdf(file_path)
+    if file:
+        pdf_reader = PyPDF2.PdfReader(file)
+        text = ''
+        for page in pdf_reader.pages:
+            text += page.extract_text()
 
-    return render_template('result.html', name=name, email=email, phone=phone)
+        return render_template('result.html', extracted_text=text)
 
 if __name__ == '__main__':
+    # Only for local development
     app.run(debug=True)
